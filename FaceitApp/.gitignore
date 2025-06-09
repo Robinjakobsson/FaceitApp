@@ -1,0 +1,39 @@
+# Xcode
+DerivedData/
+build/
+*.xcuserstate
+*.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+*.xcworkspace/xcuserdata/
+
+# SwiftPM
+.build/
+
+# CocoaPods
+Pods/
+
+# Carthage
+Carthage/Build/
+
+# Swift Package Manager
+Packages/
+.swiftpm/
+
+# Fastlane
+fastlane/report.xml
+fastlane/screenshots
+fastlane/test_output
+
+# Firebase
+GoogleService-Info.plist
+
+# Secrets
+Secrets.plist
+
+# User settings
+*.xcuserdata/
+*.idea/
+*.swp
+*.swo
+
+# macOS system files
+.DS_Store
