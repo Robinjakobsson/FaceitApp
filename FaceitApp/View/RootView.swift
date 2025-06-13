@@ -10,6 +10,7 @@ import SwiftUI
 struct RootView: View {
     let player : PlayerResponse?
     let stats: PlayerStatsResponse?
+    let matches : [Match]?
     
     var body: some View {
         TabView {
@@ -17,7 +18,7 @@ struct RootView: View {
             .tabItem {
                 Label("Statistics", systemImage: "chart.bar")
             }
-            ProfileView(player: player, stats: stats)
+            ProfileView(player: player, stats: stats, matches: matches)
             .tabItem {
                 Label("Profile", systemImage: "person.crop.circle")
             }

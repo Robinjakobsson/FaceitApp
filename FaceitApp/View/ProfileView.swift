@@ -6,7 +6,6 @@
 //
 
 //MARK: Att göra:
-// 2: Visa en lista av matcher som sidan man anländer till :
 // 3: Kunna trycka in på en match och se statistik om sig själv eventuellt alla i matchen. :
 // 4: Ha W-W-W-L I hemskärmen :
 
@@ -16,37 +15,68 @@ import SwiftUI
 struct ProfileView: View {
     let player : PlayerResponse?
     let stats : PlayerStatsResponse?
-    
-    
+    let matches : [Match]?
     @StateObject var vm = ProfileViewViewModel()
+    
+    
     var body: some View {
         NavigationView {
             VStack {
                 HStack {
-                    VStack( spacing: 20) {
-                        Text("\(player?.nickname ?? "")")
-                            .font(.title)
+                    VStack(spacing: 20) {
+                        // Nickname
+                        Text(player?.nickname ?? "")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .foregroundColor(.primary)
                         
+                        // Elo
                         Text("Elo: \(player?.cs2Elo ?? 0)")
-                            .font(.subheadline)
+                            .font(.headline)
+                            .foregroundColor(.secondary)
                     }
                     .padding(.trailing, 100)
                     
                     RoundPictureView(pictureString: player?.avatar ?? "", player: player)
-                    
-                   
                 }
-                Text("Previous Matches")
-                Divider()
-                    .background(.white)
-                    .padding(.horizontal)
+                .padding(.horizontal)
+                .padding(.top, 20)
                 
-                Spacer()
+                // Latest Matches
+                VStack(spacing: 8) {
+                    HStack {
+                        Text("Latest Matches")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.orange)
+                        
+                        Spacer()
+                    }
+                    
+                    // Gradient Divider
+                    Rectangle()
+                        .fill(
+                            LinearGradient(
+                                colors: [.orange.opacity(0.7), .orange.opacity(0.3)],
+                                startPoint: .leading,
+                                endPoint: .trailing)
+                        )
+                        .frame(height: 3)
+                        .cornerRadius(2)
                 }
+                .padding(.horizontal)
+                .padding(.top, 10)
+                
+                // List of matches
+                List(matches ?? []) { match in
+                    MatchRow(match: match)
+                }
+                .listStyle(PlainListStyle())
             }
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
-
+}
 #Preview {
     ProfileView(
         player: PlayerResponse(
@@ -65,36 +95,14 @@ struct ProfileView: View {
             start: 0,
             end: 0,
             items: []
-        )
+        ), matches: [Match(id: "1", score: "1 / 2", map: "De_Dust2", win: true)]
     )
 }
 
 extension ProfileView {
     @MainActor
     class ProfileViewViewModel : ObservableObject {
+        @Published var matches : [Match] = []
         let apiService = ApiCaller()
-        
-        @Published var player : PlayerResponse?
-        @Published var playerStats : PlayerStatsResponse?
-        
-        func fetchProfile(nickname: String) {
-            Task {
-                do {
-                    let player = try await apiService.fetchFaceitProfile(nickname: nickname)
-                    
-                    await MainActor.run {
-                        self.player = player
-                    }
-                    
-                    let stats = try await apiService.fetchPlayerStats(playerId: player.player_id)
-                    
-                    await MainActor.run {
-                        self.playerStats = stats
-                    }
-                } catch {
-                    print("Fel vid hämtning: \(error)")
-                }
-            }
-        }
     }
 }

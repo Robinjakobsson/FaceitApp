@@ -40,7 +40,7 @@ struct SearchView: View {
             .padding()
             .background(
                 NavigationLink(
-                    destination: RootView(player: viewModel.player, stats: viewModel.playerStats),
+                    destination: RootView(player: viewModel.player, stats: viewModel.playerStats, matches: viewModel.matches ),
                     isActive: $showStats
                 ) {
                     EmptyView()
@@ -79,6 +79,12 @@ extension SearchView {
         
         @Published var player: PlayerResponse?
         @Published var playerStats: PlayerStatsResponse?
+        @Published var matches : [Match] = []
+        
+        // Fetching stats manually and storing everything in Matches
+        @Published var maps = []
+        @Published var endScores = []
+        @Published var matchIds = []
         
         func fetchProfile(nickname: String, completion: @escaping (_ success: Bool, _ error: String?) -> Void) {
             Task {
@@ -89,6 +95,9 @@ extension SearchView {
                     let stats = try await apiService.fetchPlayerStats(playerId: player.player_id)
                     await MainActor.run { self.playerStats = stats }
                     
+                    
+                    extractData(from: stats)
+                    
                     await MainActor.run { completion(true, nil) }
                     
                 } catch {
@@ -96,6 +105,39 @@ extension SearchView {
                         completion(false, "Kunde inte hämta spelarinformation.")
                     }
                 }
+            }
+        }
+        
+        func extractData(from stats: PlayerStatsResponse) {
+            var extractedMatches: [Match] = []
+
+            for item in stats.items {
+               // unwrapping
+                let mapStat = item.stats["Map"]
+                let scoreStat = item.stats["Score"]
+                let matchIdStat = item.stats["Match Id"]
+                let resultStat = item.stats["Result"]
+
+                let map = (mapStat??.value as? String) ?? "Unknown"
+                let score = (scoreStat??.value as? String) ?? "0-0"
+                let matchId = (matchIdStat??.value as? String) ?? UUID().uuidString
+                let resultValue = resultStat??.value
+                let win: Bool
+
+                if let resultString = resultValue {
+                    win = resultString == "1"
+                } else if let resultInt = resultValue as? Int {
+                    win = resultInt == 1
+                } else {
+                    win = false
+                }
+
+                let match = Match(id: matchId, score: score, map: map, win: win)
+                extractedMatches.append(match)
+            }
+
+            DispatchQueue.main.async {
+                self.matches = extractedMatches
             }
         }
     }
