@@ -13,10 +13,13 @@ struct PlayerStatsResponse: Codable {
     let start: Int
     let end: Int
     let items: [PlayerStatItem]
+    
+    
 }
 
 struct PlayerStatItem: Codable {
     let stats: [String: StatValue?]
+    
     
     struct StatValue: Codable {
         let value: String?
@@ -29,6 +32,7 @@ struct PlayerStatItem: Codable {
 }
 
 extension PlayerStatItem {
+    
     var kills: Int? {
         guard let statValue = stats["Kills"] else { return nil }
         guard let killsString = statValue?.value else { return nil }
@@ -78,6 +82,7 @@ extension PlayerStatItem {
 }
 
 extension PlayerStatsResponse {
+    
     var totalKills: Int {
         items.compactMap { $0.kills }.reduce(0, +)
     }

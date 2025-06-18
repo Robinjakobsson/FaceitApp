@@ -16,9 +16,10 @@ import SwiftUI
 struct ProfileView: View {
     let player : PlayerResponse?
     let stats : PlayerStatsResponse?
-    
-    
+    let matches : [Match]?
     @StateObject var vm = ProfileViewViewModel()
+    
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -34,18 +35,27 @@ struct ProfileView: View {
                     
                     RoundPictureView(pictureString: player?.avatar ?? "", player: player)
                     
-                   
+                    
                 }
-                Text("Previous Matches")
+                
                 Divider()
                     .background(.white)
                     .padding(.horizontal)
+                Text("Previous Matches")
+                
+                // List of matches
+                if let matches = matches {
+                    List(matches) { match in
+                        MatchRow(match: match)
+                    }
+                    
+                }
                 
                 Spacer()
-                }
             }
         }
     }
+}
 
 #Preview {
     ProfileView(
@@ -65,36 +75,14 @@ struct ProfileView: View {
             start: 0,
             end: 0,
             items: []
-        )
+        ), matches: [Match(id: "1", score: "1 / 2", map: "De_Dust2", win: true)]
     )
 }
 
 extension ProfileView {
     @MainActor
     class ProfileViewViewModel : ObservableObject {
+        @Published var matches : [Match] = []
         let apiService = ApiCaller()
-        
-        @Published var player : PlayerResponse?
-        @Published var playerStats : PlayerStatsResponse?
-        
-        func fetchProfile(nickname: String) {
-            Task {
-                do {
-                    let player = try await apiService.fetchFaceitProfile(nickname: nickname)
-                    
-                    await MainActor.run {
-                        self.player = player
-                    }
-                    
-                    let stats = try await apiService.fetchPlayerStats(playerId: player.player_id)
-                    
-                    await MainActor.run {
-                        self.playerStats = stats
-                    }
-                } catch {
-                    print("Fel vid hämtning: \(error)")
-                }
-            }
-        }
     }
 }
