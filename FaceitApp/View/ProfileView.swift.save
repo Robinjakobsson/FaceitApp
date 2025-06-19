@@ -38,7 +38,6 @@ struct ProfileView: View {
                     .padding(.trailing, 100)
                     
                     RoundPictureView(pictureString: player?.avatar ?? "", player: player)
-
                 }
                 .padding(.horizontal)
                 .padding(.top, 20)
@@ -54,6 +53,7 @@ struct ProfileView: View {
                         Spacer()
                     }
                     
+<<<<<<< HEAD
                     // Gradient Divider
                     Rectangle()
                         .fill(
@@ -68,31 +68,25 @@ struct ProfileView: View {
                 .padding(.horizontal)
                 .padding(.top, 10)
                 
-                Text("Previous Matches")
-                    
+                // List of matches
+                List(matches ?? []) { match in
+                    MatchRow(match: match)
+                }
+                .listStyle(PlainListStyle())
+=======
                     
                 }
                 
                 Divider()
                     .background(.white)
-                    .padding(.horizontal
-)
+                    .padding(.horizontal)
                 Text("Previous Matches")
-                
-                // List of matches
+                               // List of matches
                 if let matches = matches {
                     List(matches) { match in
                         MatchRow(match: match)
                     }
                     
-                }
-                
-                // List of matches
-                if let matches = matches {
-                    List(matches) { match in
-                        MatchRow(match: match)
-                    }
-                    .listStyle(PlainListStyle())
                 }
                 
                 Spacer()
@@ -101,7 +95,6 @@ struct ProfileView: View {
         }
     }
 }
-
 #Preview {
     ProfileView(
         player: PlayerResponse(
@@ -131,6 +124,3 @@ extension ProfileView {
         let apiService = ApiCaller()
     }
 }
-git add FaceitApp/View/ProfileView.swift
-git commit -m "solved issue"
-
