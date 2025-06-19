@@ -5,11 +5,6 @@
 //  Created by Robin jakobsson on 2025-05-31.
 //
 
-//MARK: Att göra:
-// 3: Kunna trycka in på en match och se statistik om sig själv eventuellt alla i matchen. :
-// 4: Ha W-W-W-L I hemskärmen :
-
-
 import SwiftUI
 
 struct ProfileView: View {
@@ -17,7 +12,6 @@ struct ProfileView: View {
     let stats : PlayerStatsResponse?
     let matches : [Match]?
     @StateObject var vm = ProfileViewViewModel()
-    
     
     var body: some View {
         NavigationView {
@@ -38,12 +32,11 @@ struct ProfileView: View {
                     .padding(.trailing, 100)
                     
                     RoundPictureView(pictureString: player?.avatar ?? "", player: player)
-
                 }
                 .padding(.horizontal)
                 .padding(.top, 20)
                 
-                // Latest Matches
+                // Latest Matches Header med gradient
                 VStack(spacing: 8) {
                     HStack {
                         Text("Latest Matches")
@@ -54,7 +47,6 @@ struct ProfileView: View {
                         Spacer()
                     }
                     
-                    // Gradient Divider
                     Rectangle()
                         .fill(
                             LinearGradient(
@@ -68,26 +60,13 @@ struct ProfileView: View {
                 .padding(.horizontal)
                 .padding(.top, 10)
                 
+                // Previous Matches Header
                 Text("Previous Matches")
-                    
-                    
-                }
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .padding(.top, 20)
                 
-                Divider()
-                    .background(.white)
-                    .padding(.horizontal
-)
-                Text("Previous Matches")
-                
-                // List of matches
-                if let matches = matches {
-                    List(matches) { match in
-                        MatchRow(match: match)
-                    }
-                    
-                }
-                
-                // List of matches
+                // Lista med matcher
                 if let matches = matches {
                     List(matches) { match in
                         MatchRow(match: match)
@@ -120,17 +99,15 @@ struct ProfileView: View {
             start: 0,
             end: 0,
             items: []
-        ), matches: [Match(id: "1", score: "1 / 2", map: "De_Dust2", win: true)]
+        ),
+        matches: [Match(id: "1", score: "1 / 2", map: "De_Dust2", win: true)]
     )
 }
 
 extension ProfileView {
     @MainActor
-    class ProfileViewViewModel : ObservableObject {
-        @Published var matches : [Match] = []
+    class ProfileViewViewModel: ObservableObject {
+        @Published var matches: [Match] = []
         let apiService = ApiCaller()
     }
 }
-git add FaceitApp/View/ProfileView.swift
-git commit -m "solved issue"
-
