@@ -38,6 +38,7 @@ struct ProfileView: View {
                     .padding(.trailing, 100)
                     
                     RoundPictureView(pictureString: player?.avatar ?? "", player: player)
+
                 }
                 .padding(.horizontal)
                 .padding(.top, 20)
@@ -68,7 +69,23 @@ struct ProfileView: View {
                 .padding(.top, 10)
                 
                 Text("Previous Matches")
-                    .padding(.horizontal)
+                    
+                    
+                }
+                
+                Divider()
+                    .background(.white)
+                    .padding(.horizontal
+)
+                Text("Previous Matches")
+                
+                // List of matches
+                if let matches = matches {
+                    List(matches) { match in
+                        MatchRow(match: match)
+                    }
+                    
+                }
                 
                 // List of matches
                 if let matches = matches {
@@ -114,3 +131,6 @@ extension ProfileView {
         let apiService = ApiCaller()
     }
 }
+git add FaceitApp/View/ProfileView.swift
+git commit -m "solved issue"
+
