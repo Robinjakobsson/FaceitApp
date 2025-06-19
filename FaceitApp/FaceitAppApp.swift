@@ -12,6 +12,7 @@ struct FaceitAppApp: App {
     var body: some Scene {
         WindowGroup {
             SearchView()
+                .preferredColorScheme(.dark)
         }
     }
 }
