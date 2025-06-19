@@ -53,6 +53,7 @@ struct ProfileView: View {
                         Spacer()
                     }
                     
+<<<<<<< HEAD
                     // Gradient Divider
                     Rectangle()
                         .fill(
@@ -67,15 +68,25 @@ struct ProfileView: View {
                 .padding(.horizontal)
                 .padding(.top, 10)
                 
-                Text("Previous Matches")
-                    .padding(.horizontal)
-                
                 // List of matches
+                List(matches ?? []) { match in
+                    MatchRow(match: match)
+                }
+                .listStyle(PlainListStyle())
+=======
+                    
+                }
+                
+                Divider()
+                    .background(.white)
+                    .padding(.horizontal)
+                Text("Previous Matches")
+                               // List of matches
                 if let matches = matches {
                     List(matches) { match in
                         MatchRow(match: match)
                     }
-                    .listStyle(PlainListStyle())
+                    
                 }
                 
                 Spacer()
@@ -84,7 +95,6 @@ struct ProfileView: View {
         }
     }
 }
-
 #Preview {
     ProfileView(
         player: PlayerResponse(
